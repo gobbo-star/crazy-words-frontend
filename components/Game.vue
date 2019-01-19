@@ -4,21 +4,28 @@
     <h4 class="question-title">
       Что изображено на картинке ниже?
     </h4>
-    <GamePicture :id="pictureId" />
+    <GamePicture v-if="showImage" :id="pictureId" />
+    <button @click="showImage=!showImage">
+      show
+    </button>
   </div>
 </template>
 
 <script>
 import GamePicture from './GamePicture.vue'
 export default {
+  name: 'GameComponent',
   components: {
     GamePicture
   },
   data() {
     return {
-      pictureId: 0,
-      anwerText: ''
+      pictureId: '0',
+      anwerText: '',
+      showImage: true
     }
+  },
+  mounted() {
   }
 }
 </script>
