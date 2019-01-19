@@ -52,15 +52,21 @@ export default {
   width: 100%;
   height: 50px;
   display: flex;
+  justify-content:space-around;
+  align-items: stretch;
+  margin: 20px 0;
+
   &-item {
     width: 50px;
     height: 50px;
-    border: 1px solid greenyellow;
+    border: 2px solid #d0d0d0;
+    border-radius: 3px;
     background: #fff;
     display: inline-block;
     text-align: center;
     line-height: 50px;
     color: #000;
+    margin: 1px;
   }
 }
 .hidden-input {

@@ -28,7 +28,7 @@ export default {
     return {
       pictureId: '0',
       answerText: '',
-      answerLen: 5
+      answerLen: 15
     }
   },
   mounted() {
