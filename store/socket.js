@@ -28,10 +28,10 @@ export const actions = {
   },
   onSocketConnectionError({ commit, state }, error) {
     // state.socket.disconnect()
+    console.log(error)
     Message({
       message: 'Ошибка подключения к сокету',
       type: 'error',
-      duration: 0,
       showClose: true,
       onClose: () => {
         // state.socket.connect()

@@ -1,4 +1,4 @@
-import Game from './Game.vue'
+import Game from './Game'
 import UserList from './UserList.vue'
 import Chat from './Chat.vue'
 
