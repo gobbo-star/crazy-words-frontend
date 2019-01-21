@@ -5,7 +5,7 @@
       Get Hint
     </button>
     <p>
-      {{ hint }}
+      [{{ hint }}]
     </p>
     <div v-show="isReady">
       <h4 class="question-title">
