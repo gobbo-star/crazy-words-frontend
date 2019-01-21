@@ -1,17 +1,28 @@
 <template>
   <div class="game-container" @click="onClick">
     <h3>Game</h3>
-    <h4 class="question-title">
-      Что изображено на картинке ниже?
-    </h4>
-    <GamePicture :id="pictureId" />
-    <hr>
-    <form @submit.stop.prevent="onSubmit">
-      <GameInput ref="input" v-model="answerText" :length="answerLen" />
-      <button type="submit" :disabled="answerLen !== answerText.length">
-        Подтвердить
-      </button>
-    </form>
+    <button @click="getHint">
+      Get Hint
+    </button>
+    <p>
+      {{ hint }}
+    </p>
+    <div v-show="isReady">
+      <h4 class="question-title">
+        Что изображено на картинке ниже?
+      </h4>
+      <GamePicture :id="pictureId" />
+      <hr>
+      <form @submit.stop.prevent="onSubmit">
+        <GameInput ref="input" v-model="answerText" :length="wordLen" />
+        <button type="submit" :disabled="wordLen !== answerText.length">
+          Подтвердить
+        </button>
+      </form>
+    </div>
+    <div v-if="isWait">
+      Ожидайте...
+    </div>
   </div>
 </template>
 
@@ -24,24 +35,46 @@ export default {
     GamePicture,
     GameInput
   },
+  props: {
+    wordLen: {
+      type: Number,
+      default: () => 0
+    },
+    status: {
+      type: String,
+      default: () => 'wait'
+    },
+    hint: {
+      type: String,
+      default: () => ''
+    }
+  },
   data() {
     return {
       pictureId: '0',
-      answerText: '',
-      answerLen: 15
+      answerText: ''
+    }
+  },
+  computed: {
+    isReady() {
+      return this.status === 'ready'
+    },
+    isWait() {
+      return this.status === 'wait'
     }
   },
   mounted() {
   },
   methods: {
     onSubmit() {
-      console.log('submit')
+      this.$emit('send', this.answerText)
       this.answerText = ''
-      this.$message({
-        message: 'Отправлено!'
-      })
     },
     onClick() {
+      this.$refs.input.focusInput()
+    },
+    getHint() {
+      this.$emit('getHint')
       this.$refs.input.focusInput()
     }
   }

@@ -4,16 +4,28 @@
       <h1 class="title">
         Crazy words the game
       </h1>
-      <nuxt-link class="button-start" to="/game">
+      <p v-if="!socketOpen">
+        Подключение...
+      </p>
+      <nuxt-link v-if="socketOpen" class="button-start" to="/game">
         Начать
       </nuxt-link>
+      <button @click="send('CONNECT')">
+        Start
+      </button>
     </div>
   </section>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 
 export default {
+  computed: {
+    ...mapState({
+      socketOpen: state => state.socket.opened
+    })
+  }
 }
 </script>
 

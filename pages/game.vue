@@ -1,22 +1,63 @@
 <template>
-  <div class="page-container">
-    <div class="col left-col">
-      <UserList />
+  <div>
+    <div v-if="socketOpen" class="page-container">
+      <div class="col left-col">
+        <UserList />
+      </div>
+      <div class="col center-col">
+        <Game :word-len="wordLen" :status="status" :hint="hint" @send="sendWord" @getHint="getHint" />
+      </div>
+      <div class="col right-col">
+        <Chat />
+      </div>
     </div>
-    <div class="col center-col">
-      <Game />
-    </div>
-    <div class="col right-col">
-      <Chat />
+    <div v-if="!socketOpen" class="page-container">
+      <div class="col center-col">
+        Подключение...
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 import { GameComponents } from '../components/game-page.js'
 export default {
   components: {
     ...GameComponents
+  },
+  computed: {
+    ...mapState({
+      socketOpen: state => state.socket.opened,
+      message: state => state.socket.message,
+      status: state => state.socket.status,
+      wordLen: state => state.socket.wordLen,
+      hint: state => state.socket.hint
+    })
+  },
+  watch: {
+    socketOpen(newVal, oldVal) {
+      if (newVal) {
+        this.connect()
+      }
+    },
+    message(newVal, oldVal) {
+      console.log(newVal, oldVal)
+    }
+  },
+  mounted() {
+    if (this.socketOpen) {
+      this.connect()
+    }
+  },
+  methods: {
+    connect() {
+      this.send('CONNECT')
+    },
+    getHint() {
+      this.send('HINT')
+    },
+    ...mapActions('socket', ['send', 'sendWord'])
   }
 }
 </script>

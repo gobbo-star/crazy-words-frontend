@@ -2,7 +2,7 @@
   <div class="game-input" @click="focusInput">
     Game input
     <div class="inputs">
-      <span v-for="(n, i) of length" :key="i" class="inputs-item" @click="focusInput">
+      <span v-for="(n, i) of length" :key="i" class="inputs-item" :class="{active: i === value.length, fill: i < value.length}" @click="focusInput">
         {{ value[n - 1] || '' }}
       </span>
     </div>
@@ -30,8 +30,18 @@ export default {
       default: () => 0
     }
   },
+  data() {
+    return {
+      listener: null
+    }
+  },
   mounted() {
     this.focusInput()
+    this.listener = () => this.focusInput()
+    window.addEventListener('keyup', this.listener)
+  },
+  beforeDestroy() {
+    window.removeEventListener('keyup', this.listener)
   },
   methods: {
     updateInput() {
@@ -64,9 +74,52 @@ export default {
     background: #fff;
     display: inline-block;
     text-align: center;
-    line-height: 50px;
+    line-height: 45px;
     color: #000;
     margin: 1px;
+    position: relative;
+    cursor: text;
+    transition: .4s ease-in;
+    overflow: hidden;
+    font-size: 35px;
+    font-weight: bold;
+    &:before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: red;
+      top: 0;
+      left: 0;
+      transition: .4s;
+    }
+    &.active {
+      &::after {
+        content: '';
+        z-index: 1;
+        height: 30px;
+        top: 10px;
+        left: 24px;
+        width: 2px;
+        background-color: #484041;
+        position: absolute;
+        animation-name: blinker;
+        animation-iteration-count: infinite;
+        animation-timing-function: cubic-bezier(1.0,2.0,0,1.0);
+        animation-duration: 1s;
+        -webkit-animation-name: blinker;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-timing-function: cubic-bezier(1.0,2.0,0,1.0);
+        -webkit-animation-duration: 1s;
+      }
+    }
+    &.fill {
+      background-color: yellowgreen;
+      &::before {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+    }
   }
 }
 .hidden-input {
@@ -77,5 +130,10 @@ export default {
   left: -9999999px;
   top: -9999999px;
   z-index: -1;
+}
+
+@keyframes blinker {
+  from { opacity: 1.0; }
+  to { opacity: 0.0; }
 }
 </style>
