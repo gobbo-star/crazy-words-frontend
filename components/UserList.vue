@@ -4,11 +4,11 @@
     <div class="user-list-container">
       <transition-group name="list-complete" tag="p">
         <span
-          v-for="(participant) in participants"
-          :key="participant.Name"
+          v-for="(participant, key) in participants"
+          :key="key + participant.Name"
           class="list-complete-item"
         >
-          <span>{{ participant.Name }}</span>
+          <span>{{ participant.Name }} ({{ participant.Score }})</span>
         </span>
       </transition-group>
       <!-- <transition-group

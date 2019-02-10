@@ -27,7 +27,8 @@ export const state = () => ({
   wordLen: null,
   participants: {},
   hint: '',
-  answer: ''
+  answer: '',
+  timeleft: 30
 })
 
 export const actions = {
@@ -91,6 +92,7 @@ export const actions = {
           }
           commit('SET_HINT', Payload.word)
           commit('SET_PARTICIPANTS', Payload.participants)
+          commit('SET_LEFTIME', Payload.lefttime || 30)
         }
         console.log(`MESSAGE TYPE: ${Type}`)
       } catch (error) {
@@ -128,5 +130,8 @@ export const mutations = {
   },
   SET_ANSWER(state, answer) {
     state.answer = answer
+  },
+  SET_LEFTIME(state, timeleft) {
+    state.timeleft = timeleft
   }
 }

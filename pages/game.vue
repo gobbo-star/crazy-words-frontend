@@ -5,6 +5,9 @@
         <UserList />
       </div>
       <div class="col center-col">
+        <div v-if="time != null">
+          <span>{{ time }} секунд</span>
+        </div>
         <Game
           :word-len="wordLen"
           :status="status"
@@ -44,7 +47,8 @@ export default {
       status: state => state.socket.status,
       wordLen: state => state.socket.wordLen,
       hint: state => state.socket.hint,
-      socketError: state => state.socket.socketError
+      socketError: state => state.socket.socketError,
+      time: state => state.socket.time
     })
   },
   watch: {
