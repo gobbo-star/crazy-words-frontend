@@ -2,26 +2,24 @@
   <div class="game-container" @click="onClick">
     <h3>Game</h3>
     <button @click="getHint">
-      Get Hint
+      <span>Get Hint</span>
     </button>
-    <p>
-      [{{ hint }}]
-    </p>
+    <p>[{{ hint }}]</p>
     <div v-show="isReady">
       <h4 class="question-title">
-        Что изображено на картинке ниже?
+        <span>Что изображено на картинке ниже?</span>
       </h4>
       <GamePicture :id="pictureId" />
       <hr>
       <form @submit.stop.prevent="onSubmit">
         <GameInput ref="input" v-model="answerText" :length="wordLen" />
         <button type="submit" :disabled="wordLen !== answerText.length">
-          Подтвердить
+          <span>Подтвердить</span>
         </button>
       </form>
     </div>
     <div v-if="isWait">
-      Ожидайте...
+      <span>Ожидайте...</span>
     </div>
   </div>
 </template>
@@ -51,8 +49,7 @@ export default {
   },
   data() {
     return {
-      pictureId: '0',
-      answerText: ''
+      pictureId: '0'
     }
   },
   computed: {
@@ -61,6 +58,14 @@ export default {
     },
     isWait() {
       return this.status === 'wait'
+    },
+    answerText: {
+      get() {
+        return this.$store.state.socket.answer
+      },
+      set(value) {
+        this.$store.commit('socket/SET_ANSWER', value)
+      }
     }
   },
   mounted() {
@@ -84,7 +89,7 @@ export default {
 <style lang="scss" scoped>
 .question-title {
   font-weight: 200;
-  color: #B5F44A;
+  color: #b5f44a;
   margin-top: 10px;
 }
 </style>

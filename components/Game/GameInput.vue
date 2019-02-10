@@ -1,9 +1,15 @@
 <template>
   <div class="game-input" @click="focusInput">
-    Game input
+    <span>Game input</span>
     <div class="inputs">
-      <span v-for="(n, i) of length" :key="i" class="inputs-item" :class="{active: i === value.length, fill: i < value.length}" @click="focusInput">
-        {{ value[n - 1] || '' }}
+      <span
+        v-for="(n, i) of length"
+        :key="i"
+        class="inputs-item"
+        :class="{active: i === value.length, fill: i < value.length}"
+        @click="focusInput"
+      >
+        <span>{{ value[n - 1] || '' }}</span>
       </span>
     </div>
     <input
@@ -62,7 +68,7 @@ export default {
   width: 100%;
   height: 50px;
   display: flex;
-  justify-content:space-around;
+  justify-content: space-around;
   align-items: stretch;
   margin: 20px 0;
 
@@ -79,23 +85,23 @@ export default {
     margin: 1px;
     position: relative;
     cursor: text;
-    transition: .4s ease-in;
+    transition: 0.4s ease-in;
     overflow: hidden;
     font-size: 35px;
     font-weight: bold;
     &:before {
-      content: '';
+      content: "";
       position: absolute;
       width: 100%;
       height: 100%;
       background: red;
       top: 0;
       left: 0;
-      transition: .4s;
+      transition: 0.4s;
     }
     &.active {
       &::after {
-        content: '';
+        content: "";
         z-index: 1;
         height: 30px;
         top: 10px;
@@ -105,11 +111,11 @@ export default {
         position: absolute;
         animation-name: blinker;
         animation-iteration-count: infinite;
-        animation-timing-function: cubic-bezier(1.0,2.0,0,1.0);
+        animation-timing-function: cubic-bezier(1, 2, 0, 1);
         animation-duration: 1s;
         -webkit-animation-name: blinker;
         -webkit-animation-iteration-count: infinite;
-        -webkit-animation-timing-function: cubic-bezier(1.0,2.0,0,1.0);
+        -webkit-animation-timing-function: cubic-bezier(1, 2, 0, 1);
         -webkit-animation-duration: 1s;
       }
     }
@@ -133,7 +139,11 @@ export default {
 }
 
 @keyframes blinker {
-  from { opacity: 1.0; }
-  to { opacity: 0.0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 </style>

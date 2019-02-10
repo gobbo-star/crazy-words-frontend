@@ -1,0 +1,5 @@
+export default {
+  SOCKET_CONNECTION: 'CONNECTION',
+  SOCKET_ROUND: 'ROUND',
+  SOCKET_GAME: 'GAME'
+}

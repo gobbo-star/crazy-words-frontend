@@ -1,22 +1,22 @@
 import { Message } from 'element-ui'
 
-const getWordLen = (str, isRight) => {
-  const rgx = isRight ? /new: (\d+)/g : /^new: (\d+)/g
-  const searchResult = rgx.exec(str)
-  if (searchResult) {
-    return +(searchResult[1])
-  } else {
-    return null
-  }
-}
+// const getWordLen = (str, isRight) => {
+//   const rgx = isRight ? /new: (\d+)/g : /^new: (\d+)/g
+//   const searchResult = rgx.exec(str)
+//   if (searchResult) {
+//     return +(searchResult[1])
+//   } else {
+//     return null
+//   }
+// }
 
-const isWrong = (str) => {
-  return str === 'wrong'
-}
+// const isWrong = (str) => {
+//   return str === 'wrong'
+// }
 
-const isRight = (str) => {
-  return /is right\./g.test(str)
-}
+// const isRight = (str) => {
+//   return /is right\./g.test(str)
+// }
 
 export const state = () => ({
   socket: null,
@@ -25,7 +25,9 @@ export const state = () => ({
   message: null,
   status: 'wait', // wait, ready
   wordLen: null,
-  hint: ''
+  participants: {},
+  hint: '',
+  answer: ''
 })
 
 export const actions = {
@@ -62,48 +64,38 @@ export const actions = {
   },
   onSocketConnect({ commit, dispatch }) {
     commit('SOCKET_CONNECT')
-    dispatch('sendWord', 'HINT')
+    commit('SET_STATUS', 'ready')
   },
-  onSocketConnectionError({ commit, state }, error) {
-    // state.socket.disconnect()
-    console.log(error)
+  onSocketConnectionError({ commit }, error) {
+    console.log('Ошибка подключения', error)
     Message({
       message: 'Ошибка подключения к сокету',
       type: 'error',
       showClose: true,
-      onClose: () => {
-        // state.socket.connect()
-      }
+      onClose: () => { }
     })
     commit('SOCKET_ERROR', error)
   },
-  onSocketMessage({ commit, dispatch }, message) {
-    commit('SOCKET_MESSAGE', message)
-    const word = message.data
-    const wordLen = getWordLen(word)
-    if (wordLen) {
-      commit('SET_STATUS', 'ready')
-      commit('SET_WORDLEN', wordLen)
-    } else if (isWrong(word)) {
-      commit('SET_STATUS', 'ready')
-      Message({
-        message: 'Неправильно!',
-        type: 'error',
-        showClose: true
-      })
-      dispatch('send', 'HINT')
-    } else if (isRight(word)) {
-      Message({
-        message: 'Правильно! Следующий вопрос!',
-        type: 'success',
-        showClose: true
-      })
-      const wordLen = getWordLen(word, true)
-      commit('SET_STATUS', 'ready')
-      commit('SET_WORDLEN', wordLen)
-      dispatch('send', 'HINT')
-    } else {
-      commit('SET_HINT', word)
+  onSocketMessage({ commit, state }, message) {
+    if (message.data) {
+      try {
+        const event = JSON.parse(message.data)
+        const { Type, Payload } = event
+        if (Type === 'STATE') {
+          commit('SOCKET_MESSAGE', Payload)
+          commit('SET_STATUS', 'ready')
+          commit('SET_WORDLEN', Payload.chars)
+          console.log(`${state.hint}` === Payload.word)
+          if (`${state.hint}` !== Payload.word) {
+            commit('SET_ANSWER', '')
+          }
+          commit('SET_HINT', Payload.word)
+          commit('SET_PARTICIPANTS', Payload.participants)
+        }
+        console.log(`MESSAGE TYPE: ${Type}`)
+      } catch (error) {
+        console.error('Error: ', error, message)
+      }
     }
   }
 }
@@ -130,5 +122,11 @@ export const mutations = {
   },
   SET_HINT(state, hint) {
     state.hint = hint
+  },
+  SET_PARTICIPANTS(state, participants) {
+    state.participants = participants
+  },
+  SET_ANSWER(state, answer) {
+    state.answer = answer
   }
 }

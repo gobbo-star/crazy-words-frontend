@@ -5,15 +5,26 @@
         <UserList />
       </div>
       <div class="col center-col">
-        <Game :word-len="wordLen" :status="status" :hint="hint" @send="sendWord" @getHint="getHint" />
+        <Game
+          :word-len="wordLen"
+          :status="status"
+          :hint="hint"
+          @send="sendWord"
+          @getHint="getHint"
+        />
       </div>
       <div class="col right-col">
         <Chat />
       </div>
     </div>
-    <div v-if="!socketOpen" class="page-container">
+    <div v-if="!socketOpen && !socketError" class="page-container">
       <div class="col center-col">
-        Подключение...
+        <span>Подключение...</span>
+      </div>
+    </div>
+    <div v-if="socketError" class="page-container">
+      <div class="col center-col">
+        <span>Ошибка подключения</span>
       </div>
     </div>
   </div>
@@ -32,7 +43,8 @@ export default {
       message: state => state.socket.message,
       status: state => state.socket.status,
       wordLen: state => state.socket.wordLen,
-      hint: state => state.socket.hint
+      hint: state => state.socket.hint,
+      socketError: state => state.socket.socketError
     })
   },
   watch: {
@@ -42,7 +54,7 @@ export default {
       }
     },
     message(newVal, oldVal) {
-      console.log(newVal, oldVal)
+      // console.log(newVal, oldVal)
     }
   },
   mounted() {
